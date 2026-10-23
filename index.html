@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>А что дальше? · Как прошёл твой день</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --accent:#5EB043;        /* CAREER, KidsDev */
+    --accent-dark:#3F8A2B;
+    --ink:#1F2A2B;
+    --muted:#6B7678;
+    --line:#E3E8E6;
+    --bg:#F3F6F2;
+    --card:#FFFFFF;
+    --err:#E8484D;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Montserrat',system-ui,-apple-system,sans-serif;
+    font-size:16px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:24px 16px 48px}
+  header{margin-bottom:20px}
+  .brand{font-weight:800;letter-spacing:.14em;font-size:13px;color:var(--accent-dark)}
+  h1{font-size:26px;line-height:1.2;margin:10px 0 8px;font-weight:800}
+  .intro{color:var(--muted);margin:0;font-size:15px}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px 16px;margin-bottom:12px;
+  }
+  .q{display:block;font-weight:700;font-size:16px;margin-bottom:12px}
+  .q .opt{font-weight:500;color:var(--muted);font-size:13px;margin-left:4px}
+
+  input[type=text],textarea{
+    width:100%;font:inherit;color:var(--ink);
+    border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;
+    background:#fff;outline:none;transition:border-color .15s;
+  }
+  textarea{min-height:84px;resize:vertical}
+  input[type=text]:focus,textarea:focus{border-color:var(--accent)}
+
+  .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .scale input{position:absolute;opacity:0;pointer-events:none}
+  .scale label{
+    display:flex;align-items:center;justify-content:center;
+    height:52px;border:1.5px solid var(--line);border-radius:12px;
+    font-weight:700;font-size:18px;cursor:pointer;user-select:none;
+    transition:background .15s,border-color .15s,color .15s;
+  }
+  .scale label:hover{border-color:var(--accent)}
+  .scale input:checked + label{background:var(--accent);border-color:var(--accent);color:#fff}
+  .scale input:focus-visible + label{outline:3px solid rgba(94,176,67,.35);outline-offset:2px}
+  .anchors{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--muted)}
+
+  .card.invalid{border-color:var(--err)}
+  .err{display:none;color:var(--err);font-size:13px;margin-top:8px;font-weight:600}
+  .card.invalid .err{display:block}
+
+  button{
+    width:100%;font:inherit;font-weight:700;font-size:17px;
+    background:var(--accent);color:#fff;border:0;border-radius:14px;
+    padding:16px;margin-top:8px;cursor:pointer;transition:background .15s;
+  }
+  button:hover{background:var(--accent-dark)}
+  button:disabled{opacity:.6;cursor:default}
+  .form-err{color:var(--err);font-weight:600;font-size:14px;margin-top:10px;text-align:center;display:none}
+
+  .thanks{display:none;text-align:center;padding:48px 8px}
+  .thanks .big{font-size:48px;margin-bottom:8px}
+  .thanks h2{font-size:24px;margin:0 0 8px;font-weight:800}
+  .thanks p{color:var(--muted);margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">KIDSDEV</div>
+    <h1>Интенсив «А что дальше?»<br>Как прошёл твой день?</h1>
+    <p class="intro">Заполни в конце дня, это займёт 2 минуты. Мы читаем ответы каждый вечер, чтобы завтра было ещё лучше.</p>
+  </header>
+
+  <form id="f" novalidate>
+    <div class="card" data-req="name">
+      <label class="q" for="name">Имя и фамилия</label>
+      <input type="text" id="name" name="name" autocomplete="name">
+      <div class="err">Напиши имя и фамилию</div>
+    </div>
+
+    <div class="card" data-req="day">
+      <span class="q">Оцени свой день в целом</span>
+      <div class="scale" data-name="day"></div>
+      <div class="anchors"><span>Очень плохо</span><span>Отлично</span></div>
+      <div class="err">Выбери оценку</div>
+    </div>
+
+    <div class="card">
+      <label class="q" for="liked">Что сегодня понравилось больше всего?<span class="opt">по желанию</span></label>
+      <textarea id="liked" name="liked"></textarea>
+    </div>
+
+    <div class="card">
+      <label class="q" for="disliked">Что было непонятно или не понравилось?<span class="opt">по желанию</span></label>
+      <textarea id="disliked" name="disliked"></textarea>
+    </div>
+
+    <div class="card" data-req="food">
+      <span class="q">Оцени еду сегодня</span>
+      <div class="scale" data-name="food"></div>
+      <div class="anchors"><span>Совсем не понравилась</span><span>Очень вкусно</span></div>
+      <div class="err">Выбери оценку</div>
+    </div>
+
+    <div class="card" data-req="feeling">
+      <span class="q">Как ты себя чувствуешь в конце дня?</span>
+      <div class="scale" data-name="feeling"></div>
+      <div class="anchors"><span>Очень плохо</span><span>Отлично</span></div>
+      <div class="err">Выбери оценку</div>
+    </div>
+
+    <div class="card">
+      <label class="q" for="share">Чем бы ты хотел(а) поделиться сегодня?<span class="opt">по желанию</span></label>
+      <textarea id="share" name="share"></textarea>
+    </div>
+
+    <button type="submit" id="btn">Отправить</button>
+    <div class="form-err" id="formErr">Не получилось отправить. Проверь интернет и попробуй ещё раз.</div>
+  </form>
+
+  <div class="thanks" id="thanks">
+    <div class="big">🙌</div>
+    <h2>Спасибо!</h2>
+    <p>Мы прочитаем твои ответы сегодня вечером. До завтра!</p>
+  </div>
+</div>
+
+<script>
+  // ===== Вставь сюда URL веб-приложения Apps Script (заканчивается на /exec) =====
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzX0LDiMtUblVySWA5nF1jGHba3_Z5u1KLeJgtOn10mqn_sJbqxeJ8sZFEmWIoSL87rNQ/exec';
+
+  // Шкалы 1–5
+  document.querySelectorAll('.scale').forEach(box => {
+    const n = box.dataset.name;
+    for (let i = 1; i <= 5; i++) {
+      const id = n + i;
+      box.insertAdjacentHTML('beforeend',
+        `<input type="radio" name="${n}" id="${id}" value="${i}"><label for="${id}">${i}</label>`);
+    }
+  });
+
+  const form = document.getElementById('f');
+  const nameInput = document.getElementById('name');
+
+  // Запоминаем имя на этом телефоне, чтобы не вводить каждый день
+  try { const saved = localStorage.getItem('kd_name'); if (saved) nameInput.value = saved; } catch (e) {}
+
+  // Снимаем подсветку ошибки при ответе
+  form.addEventListener('input', e => {
+    const card = e.target.closest('.card');
+    if (card) card.classList.remove('invalid');
+  });
+
+  function validate() {
+    let ok = true, first = null;
+    form.querySelectorAll('[data-req]').forEach(card => {
+      const key = card.dataset.req;
+      const filled = key === 'name'
+        ? nameInput.value.trim().length > 1
+        : !!form.querySelector(`input[name="${key}"]:checked`);
+      card.classList.toggle('invalid', !filled);
+      if (!filled) { ok = false; first = first || card; }
+    });
+    if (first) first.scrollIntoView({behavior: 'smooth', block: 'center'});
+    return ok;
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    document.getElementById('formErr').style.display = 'none';
+    if (!validate()) return;
+
+    if (!SCRIPT_URL) {
+      const err = document.getElementById('formErr');
+      err.textContent = 'Форма ещё не подключена к таблице (пустой SCRIPT_URL).';
+      err.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('btn');
+    btn.disabled = true; btn.textContent = 'Отправляем…';
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: new URLSearchParams(new FormData(form))
+      });
+      try { localStorage.setItem('kd_name', nameInput.value.trim()); } catch (e) {}
+      form.style.display = 'none';
+      document.querySelector('header').style.display = 'none';
+      document.getElementById('thanks').style.display = 'block';
+      window.scrollTo(0, 0);
+    } catch (err) {
+      btn.disabled = false; btn.textContent = 'Отправить';
+      document.getElementById('formErr').style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>
